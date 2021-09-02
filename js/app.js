@@ -1,43 +1,76 @@
+const searchResult = document.getElementById('search-result');
+const errorDiv = document.getElementById('error');
+const loader =document.getElementById("loader");
+let storeBooks = [];
+const searchResultQuantity = document.getElementById('result-quantity')
+
 //-------------------Onclick Button------------------------------
 const searchBook = () => {
+  loader.style.display = 'block'
     const searchField = document.getElementById('search-input');
     const searchText = searchField.value ;
+
+    //---error handling----
+    if(searchText === ''){
+      errorDiv.innerText = 'Search Field Empty Please Enter the Book Name';
+      searchResultQuantity.innerHTML = ``;
+      searchResult.textContent = '';
+  loader.style.display = 'none'
+
+      return;
+    }
+  
     
     //-------------------clear input field------------------
     searchField.value = '';
+
+   
 
     //---------------------Api url------------------------------------
     const url =  `https://openlibrary.org/search.json?q=${searchText}`
     fetch(url)
     .then(res => res.json())
-    .then(data => displaySearchResult(data.docs));
-
-    
+    .then(data =>{ displaySearchResult(data.docs)
 
 
+   //------------error handle-------------------
+      if(data.numFound===0){
+        errorDiv.innerText = 'No result found'
+      searchResultQuantity.innerHTML = ``;
+  loader.style.display = 'none'
+
+
+      }
+      else{
+        errorDiv.innerText = '';
+      }
+    });
 }
 
-
-
-
+//---------------------------Result Arrow Function----------------------------
 const displaySearchResult = books => {
-    const searchResult = document.getElementById('search-result');
-    books.forEach(book =>{
-        console.log(book);
+  loader.style.display = 'none'
+
+    //------------clear dom----------
+    searchResult.innerHTML ="";
+    const allBooks = books.slice(0, 30);
+    // clearing array
+    storeBooks.length = ''; 
+    allBooks.forEach(book =>{
+
         const div = document.createElement('div');
+        
         div.classList.add('col');
 
        div.innerHTML =`
        <div class="card h-100">
                <img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" class="card-img-top" alt="...">
       <div class="card-body">
-               <h5 class="card-title">${book.title}</h5>
+               <h5 class="card-title"><span class="fw-bold">Book Name :</span>${book.title ? book.title : 'Unknown title'}</h5>
                <p class="card-text"><span class="fw-bold">Author Name :</span> ${book.author_name}</p>
-               <p class="card-text"><span class="fw-bold">First Publish Date :</span> ${book.publish_date}</p>
+               <p class="card-text"><span class="fw-bold">First Publish Date :</span> ${book.first_publish_year}</p>
       </div>
-      <div class="card-footer">
-              <button type="button" onclick ="viewFullDetails('${book.key}')" class="btn btn-primary">View Full Image</button>
-      </div>
+     
     </div>
        
        `
@@ -45,43 +78,18 @@ const displaySearchResult = books => {
         searchResult.appendChild(div);
     })
 
-}
-/*
-const viewFullDetails = key => {
-
-const url = `https://openlibrary.org/search.json?q=${key}`
- 
- fetch(url)
-.then(res => res.json())
-.then(data => displayDetail(data.key));
-
-
-const displayDetail = details => {
- const showDetail = document.getElementById('show-detail');
-details.forEach(detail=>{
-    const div = document.createElement('div');
-  div.classList.add('card');
-  div.innerHTML = `
-  <div class="card mx-auto" style="width: 18rem;">
-                <img src="https://covers.openlibrary.org/b/id/${details.cover_i}-L.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <p class="card-text">${details.subject}</p>
-                  <p class="card-text">${details.subject_facet}</p>
-                </div>
-              </div>
+    books.forEach(book => {
+      storeBooks.push(book)
+  })
   
+  searchResultQuantity.innerHTML = `Results Found : ${storeBooks.length}`;
   
-  ` 
-  showDetail.appendChild(div)
-})
- 
- 
 }
 
 
 
-}
 
-*/
+
+
 
 
