@@ -15,7 +15,7 @@ const searchBook = () => {
       errorDiv.innerText = 'Search Field Empty Please Enter the Book Name';
       searchResultQuantity.innerHTML = ``;
       searchResult.textContent = '';
-  loader.style.display = 'none'
+      loader.style.display = 'none'
 
       return;
     }
@@ -35,9 +35,9 @@ const searchBook = () => {
 
    //------------error handle-------------------
       if(data.numFound===0){
-        errorDiv.innerText = 'No result found'
+      errorDiv.innerText = 'No result found'
       searchResultQuantity.innerHTML = ``;
-  loader.style.display = 'none'
+      loader.style.display = 'none'
 
 
       }
@@ -58,10 +58,8 @@ const displaySearchResult = books => {
     storeBooks.length = ''; 
     allBooks.forEach(book =>{
 
-        const div = document.createElement('div');
-        
-        div.classList.add('col');
-
+       const div = document.createElement('div');
+       div.classList.add('col');
        div.innerHTML =`
        <div class="card h-100">
                <img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" class="card-img-top" alt="...">
@@ -70,12 +68,10 @@ const displaySearchResult = books => {
                <p class="card-text"><span class="fw-bold">Author Name :</span> ${book.author_name}</p>
                <p class="card-text"><span class="fw-bold">First Publish Date :</span> ${book.first_publish_year}</p>
       </div>
-     
-    </div>
+     </div>
        
        `
-
-        searchResult.appendChild(div);
+      searchResult.appendChild(div);
     })
 
     books.forEach(book => {
